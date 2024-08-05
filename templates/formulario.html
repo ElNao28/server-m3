@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediccion Co2</title>
+    <script>
+        function clasificarInsecto(event) {
+            event.preventDefault();
+            const AST = document.getElementById('desc').value;
+            const CHE = document.getElementById('precio').value;
+            const ALP = document.getElementById('stock').value;
+            const ALT = document.getElementById('rating').value;
+            const ALL = document.getElementById('precioDes').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `desc=${AST}&precio=${CHE}&stock=${ALP}&rating=${ALT}&precioDes=${ALL}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('resultado').innerText = 'Error: ' + data.error;
+                } else {
+                    document.getElementById('resultado').innerText = 'El tipo es: ' + data.Sobrevivio;
+                }
+            })
+            .catch(error => {
+                document.getElementById('resultado').innerText = 'Error en la solicitud.';
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Prediccion de generacion de Co2</h1>
+    <form id="formulario" onsubmit="clasificarInsecto(event)">
+
+        <label for="AST">Descuento:</label>
+        <input type="text" id="desc" name="desc"><br><br>
+
+        <label for="CHE">Precio:</label>
+        <input type="text" id="precio" name="precio"><br><br>
+
+        <label for="ALP">Stock:</label>
+        <input type="text" id="stock" name="stock"><br><br>
+
+        <label for="ALT">Rating:</label>
+        <input type="text" id="rating" name="rating"><br><br>
+
+        <label for="ALL">Precio con descuento:</label>
+        <input type="text" id="precioDes" name="precioDes"><br><br>
+
+        <input type="submit" value="Enviar">
+    </form>
+    <p id="resultado"></p>
+</body>
+</html>
